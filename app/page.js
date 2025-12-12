@@ -9,13 +9,13 @@ import { useLocalStorage } from '@/hooks/useLocalStorage'
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [showOnboarding, setShowOnboarding] = useLocalStorage('bmad-onboarding-complete', false)
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(() => typeof window !== 'undefined')
 
   useEffect(() => {
-    setMounted(true)
+    if (!mounted) setMounted(true)
     const timer = setTimeout(() => setIsLoading(false), 1500)
     return () => clearTimeout(timer)
-  }, [])
+  }, [mounted])
 
   if (!mounted) return null
 
