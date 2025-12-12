@@ -293,15 +293,18 @@ frontend:
 
   - task: "Admin Mode & CMS Dashboard"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/components/workspace/AdminCMS.jsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "New feature - Admin mode with shield icon toggle, ADMIN badge, CMS button, and Admin CMS dashboard with Overview/Users/Revenue/SpecKit tabs needs testing"
+      - working: false
+        agent: "testing"
+        comment: "❌ Admin Mode not accessible - shield icon not found in sidebar, ADMIN badge and CMS button not visible. Admin functionality may not be implemented or shield icon selector needs to be added."
 
   - task: "Usage Tracker Bar"
     implemented: true
