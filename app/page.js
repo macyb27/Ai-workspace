@@ -1,23 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Workspace } from '@/components/workspace/Workspace'
-import { OnboardingModal } from '@/components/workspace/OnboardingModal'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
+
+// Dynamically import Workspace to avoid SSR issues
+const Workspace = dynamic(() => import('@/components/workspace/Workspace').then(mod => ({ default: mod.Workspace })), {
+  ssr: false,
+  loading: () => null
+})
+
+const OnboardingModal = dynamic(() => import('@/components/workspace/OnboardingModal').then(mod => ({ default: mod.OnboardingModal })), {
+  ssr: false,
+  loading: () => null
+})
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [showOnboarding, setShowOnboarding] = useLocalStorage('bmad-onboarding-complete', false)
-  const [mounted, setMounted] = useState(() => typeof window !== 'undefined')
 
   useEffect(() => {
-    if (!mounted) setMounted(true)
     const timer = setTimeout(() => setIsLoading(false), 1500)
     return () => clearTimeout(timer)
-  }, [mounted])
-
-  if (!mounted) return null
+  }, [])
 
   return (
     <>
