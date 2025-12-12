@@ -342,10 +342,11 @@ metadata:
   test_sequence: 1
 
 test_plan:
-  current_focus: []
+  current_focus: 
+    - "Admin Mode & CMS Dashboard"
+    - "Pricing Modal"
   stuck_tasks: 
-    - "Onboarding Modal"
-    - "AI Assistant Panel" 
+    - "Admin Mode & CMS Dashboard"
     - "Pricing Modal"
   test_all: false
   test_priority: "stuck_first"
