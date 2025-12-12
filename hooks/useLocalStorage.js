@@ -30,5 +30,5 @@ export function useLocalStorage(key, initialValue) {
     }
   }
 
-  return [storedValue, setValue]
+  return [isClient ? storedValue : initialValue, setValue]
 }
