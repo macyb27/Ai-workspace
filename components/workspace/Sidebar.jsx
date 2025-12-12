@@ -228,13 +228,12 @@ export function Sidebar({
                           {getFileIcon(file)}
                           <span className="truncate flex-1">{file}</span>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button
-                                className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-muted rounded"
-                                onClick={(e) => e.stopPropagation()}
+                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                              <span
+                                className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-muted rounded cursor-pointer"
                               >
                                 <MoreVertical className="w-3 h-3" />
-                              </button>
+                              </span>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem>Rename</DropdownMenuItem>
