@@ -16,7 +16,7 @@ const buttonVariants = cva(
         outline:
           "border border-border bg-transparent text-foreground shadow-sm hover:bg-muted hover:border-primary/50 active:scale-[0.98]",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:shadow-glow-premium active:scale-[0.98]",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/90 hover:shadow-glow-yellow active:scale-[0.98]",
         ghost: 
           "text-foreground hover:bg-muted hover:text-foreground",
         link: 
@@ -24,9 +24,15 @@ const buttonVariants = cva(
         glass:
           "bg-muted/50 backdrop-blur-md border border-border/50 text-foreground hover:bg-muted/70 hover:border-primary/30 active:scale-[0.98]",
         premium:
-          "bg-gradient-to-r from-secondary to-primary text-primary-foreground shadow-md hover:shadow-glow-premium hover:opacity-90 active:scale-[0.98]",
+          "bg-gradient-to-r from-premium to-warning text-premium-foreground shadow-md hover:shadow-glow-yellow hover:opacity-90 active:scale-[0.98]",
         success:
-          "bg-success text-success-foreground shadow-sm hover:bg-success/90 active:scale-[0.98]",
+          "bg-success text-success-foreground shadow-sm hover:bg-success/90 hover:shadow-glow active:scale-[0.98]",
+        neon:
+          "bg-transparent border border-primary text-primary hover:bg-primary/10 hover:shadow-glow active:scale-[0.98]",
+        "neon-yellow":
+          "bg-transparent border border-secondary text-secondary hover:bg-secondary/10 hover:shadow-glow-yellow active:scale-[0.98]",
+        admin:
+          "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md hover:shadow-glow active:scale-[0.98]",
       },
       size: {
         default: "h-10 px-4 py-2",
