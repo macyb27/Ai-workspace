@@ -273,6 +273,54 @@ frontend:
         agent: "testing"
         comment: "Minor: Settings dropdown appears on hover over gear icon with proper options (API Keys & Settings, Subscription, ML Models). Hover animation (rotation) works correctly."
 
+  - task: "AI Project Guide Panel"
+    implemented: true
+    working: "NA"
+    file: "/app/components/workspace/AIProjectGuide.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "New feature - AI Project Guide panel with project phases (Plan, Build, Test, Deploy), progress tracking, and AI suggestions needs testing"
+
+  - task: "Admin Mode & CMS Dashboard"
+    implemented: true
+    working: "NA"
+    file: "/app/components/workspace/AdminCMS.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "New feature - Admin mode with shield icon toggle, ADMIN badge, CMS button, and Admin CMS dashboard with Overview/Users/Revenue/SpecKit tabs needs testing"
+
+  - task: "Usage Tracker Bar"
+    implemented: true
+    working: "NA"
+    file: "/app/components/workspace/UsageTracker.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "New feature - Usage tracker bar at bottom showing AI credits with 'Get More Credits' button needs testing"
+
+  - task: "Dark Theme with Neon Accents"
+    implemented: true
+    working: "NA"
+    file: "/app/app/globals.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Updated theme - Dark black background with neon green (#22c55e) and yellow/lime accents, gold premium buttons needs testing"
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
