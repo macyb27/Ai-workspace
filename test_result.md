@@ -276,19 +276,13 @@ metadata:
   test_sequence: 1
 
 test_plan:
-  current_focus:
-    - "Loading Screen Animation"
+  current_focus: []
+  stuck_tasks: 
     - "Onboarding Modal"
-    - "Main Workspace Layout"
-    - "Sidebar Navigation"
-    - "Code Editor"
-    - "Live Preview Panel"
-    - "BMAD Dashboard"
-    - "AI Assistant Panel"
+    - "AI Assistant Panel" 
     - "Pricing Modal"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  test_all: false
+  test_priority: "stuck_first"
 
 agent_communication:
   - agent: "testing"
