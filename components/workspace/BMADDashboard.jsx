@@ -17,7 +17,8 @@ import {
   AlertCircle,
   TrendingUp,
   Lock,
-  Zap
+  Zap,
+  Star
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -34,16 +35,16 @@ const bmadStages = [
     id: 'measure',
     label: 'Measure',
     icon: BarChart3,
-    color: 'text-accent',
-    bgColor: 'bg-accent/20',
+    color: 'text-secondary',
+    bgColor: 'bg-secondary/20',
     description: 'Performance metrics & analytics'
   },
   {
     id: 'analyze',
     label: 'Analyze',
     icon: Brain,
-    color: 'text-secondary',
-    bgColor: 'bg-secondary/20',
+    color: 'text-accent',
+    bgColor: 'bg-accent/20',
     description: 'AI-powered insights'
   },
   {
@@ -84,7 +85,7 @@ const mockMetrics = {
   }
 }
 
-export function BMADDashboard({ userTier }) {
+export function BMADDashboard({ userTier, onUpgrade }) {
   const [expanded, setExpanded] = useState(true)
   const [activeStage, setActiveStage] = useState('build')
 
@@ -95,7 +96,7 @@ export function BMADDashboard({ userTier }) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Build Status</span>
-              <span className="flex items-center gap-1 text-success text-sm">
+              <span className="flex items-center gap-1 text-primary text-sm">
                 <CheckCircle2 className="w-4 h-4" />
                 Success
               </span>
@@ -111,10 +112,10 @@ export function BMADDashboard({ userTier }) {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex items-center justify-between p-2 rounded-lg bg-muted/30"
+                  className="flex items-center justify-between p-2 rounded-lg bg-muted/30 border border-border"
                 >
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
                     <span className="text-sm">{task.name}</span>
                   </div>
                   <span className="text-xs text-muted-foreground">{task.time}</span>
@@ -139,7 +140,7 @@ export function BMADDashboard({ userTier }) {
                   <span className="text-sm capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
                   <span className={cn(
                     "text-sm font-medium",
-                    value >= 90 ? "text-success" : value >= 70 ? "text-accent" : "text-destructive"
+                    value >= 90 ? "text-primary" : value >= 70 ? "text-secondary" : "text-destructive"
                   )}>
                     {value}
                   </span>
@@ -154,30 +155,30 @@ export function BMADDashboard({ userTier }) {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-2">
-              <div className="p-3 rounded-lg bg-secondary/10 text-center">
+              <div className="p-3 rounded-lg bg-secondary/10 border border-secondary/30 text-center">
                 <div className="text-2xl font-bold text-secondary">{mockMetrics.analyze.suggestions}</div>
                 <div className="text-xs text-muted-foreground">Suggestions</div>
               </div>
-              <div className="p-3 rounded-lg bg-destructive/10 text-center">
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-center">
                 <div className="text-2xl font-bold text-destructive">{mockMetrics.analyze.issues}</div>
                 <div className="text-xs text-muted-foreground">Issues</div>
               </div>
-              <div className="p-3 rounded-lg bg-success/10 text-center">
-                <div className="text-2xl font-bold text-success">{mockMetrics.analyze.optimizations}</div>
+              <div className="p-3 rounded-lg bg-primary/10 border border-primary/30 text-center">
+                <div className="text-2xl font-bold text-primary">{mockMetrics.analyze.optimizations}</div>
                 <div className="text-xs text-muted-foreground">Optimized</div>
               </div>
             </div>
 
             <div className="space-y-2 mt-4">
-              <div className="p-3 rounded-lg bg-muted/30 flex items-start gap-3">
-                <TrendingUp className="w-4 h-4 text-success mt-0.5" />
+              <div className="p-3 rounded-lg bg-muted/30 border border-border flex items-start gap-3">
+                <TrendingUp className="w-4 h-4 text-primary mt-0.5" />
                 <div>
                   <p className="text-sm font-medium">Bundle size reduced by 23%</p>
                   <p className="text-xs text-muted-foreground">Tree-shaking removed unused code</p>
                 </div>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30 flex items-start gap-3">
-                <AlertCircle className="w-4 h-4 text-accent mt-0.5" />
+              <div className="p-3 rounded-lg bg-muted/30 border border-border flex items-start gap-3">
+                <AlertCircle className="w-4 h-4 text-secondary mt-0.5" />
                 <div>
                   <p className="text-sm font-medium">Consider lazy loading</p>
                   <p className="text-xs text-muted-foreground">3 components could be code-split</p>
@@ -186,15 +187,16 @@ export function BMADDashboard({ userTier }) {
             </div>
 
             {userTier === 'free' && (
-              <div className="p-3 rounded-lg border border-secondary/30 bg-secondary/5">
+              <div className="p-3 rounded-lg border border-premium/30 bg-premium/5">
                 <div className="flex items-center gap-2 mb-2">
-                  <Lock className="w-4 h-4 text-secondary" />
+                  <Lock className="w-4 h-4 text-premium" />
                   <span className="text-sm font-medium">Deep Analysis</span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">
                   Unlock advanced AI insights with Pro
                 </p>
-                <Button variant="secondary" size="sm" className="w-full">
+                <Button variant="premium" size="sm" className="w-full" onClick={onUpgrade}>
+                  <Star className="w-3 h-3" />
                   Upgrade to Pro
                 </Button>
               </div>
@@ -207,16 +209,16 @@ export function BMADDashboard({ userTier }) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Status</span>
-              <span className="flex items-center gap-1 text-success text-sm">
+              <span className="flex items-center gap-1 text-primary text-sm">
                 <Zap className="w-4 h-4" />
                 Ready to deploy
               </span>
             </div>
 
-            <div className="p-3 rounded-lg bg-muted/30 space-y-2">
+            <div className="p-3 rounded-lg bg-muted/30 border border-border space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm">Environment</span>
-                <span className="text-sm text-primary">{mockMetrics.deploy.environment}</span>
+                <span className="text-sm text-secondary">{mockMetrics.deploy.environment}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Last Deploy</span>
@@ -230,9 +232,9 @@ export function BMADDashboard({ userTier }) {
             </Button>
 
             {userTier !== 'enterprise' && (
-              <div className="p-3 rounded-lg border border-secondary/30 bg-secondary/5">
+              <div className="p-3 rounded-lg border border-premium/30 bg-premium/5">
                 <div className="flex items-center gap-2 mb-2">
-                  <Lock className="w-4 h-4 text-secondary" />
+                  <Lock className="w-4 h-4 text-premium" />
                   <span className="text-sm font-medium">White-Label Deploy</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -292,7 +294,7 @@ export function BMADDashboard({ userTier }) {
               "flex items-center justify-center rounded-lg transition-colors",
               expanded ? "flex-1 p-2 gap-2" : "p-2",
               activeStage === stage.id
-                ? `${stage.bgColor} ${stage.color}`
+                ? `${stage.bgColor} ${stage.color} border border-current/20`
                 : "text-muted-foreground hover:bg-muted/50"
             )}
             whileHover={{ scale: 1.02 }}

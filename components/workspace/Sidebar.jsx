@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Switch } from '@/components/ui/switch'
 import {
   ChevronLeft,
   ChevronRight,
@@ -20,26 +21,29 @@ import {
   Boxes,
   GitBranch,
   Search,
-  Lock
+  Lock,
+  Shield,
+  LogIn
 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
 const getFileIcon = (filename) => {
   if (filename.endsWith('.jsx') || filename.endsWith('.js')) {
-    return <FileCode className="w-4 h-4 text-accent" />
+    return <FileCode className="w-4 h-4 text-secondary" />
   }
   if (filename.endsWith('.json')) {
-    return <FileJson className="w-4 h-4 text-success" />
+    return <FileJson className="w-4 h-4 text-primary" />
   }
   if (filename.endsWith('.css')) {
-    return <FileText className="w-4 h-4 text-primary" />
+    return <FileText className="w-4 h-4 text-accent" />
   }
   return <FileText className="w-4 h-4 text-muted-foreground" />
 }
@@ -52,7 +56,10 @@ export function Sidebar({
   onFileSelect,
   onSettingsClick,
   onPricingClick,
-  userTier
+  onAdminClick,
+  userTier,
+  isAdmin,
+  onAdminToggle
 }) {
   const [foldersOpen, setFoldersOpen] = useState({ src: true, components: false })
   const [advancedMenuOpen, setAdvancedMenuOpen] = useState(false)
@@ -82,7 +89,7 @@ export function Sidebar({
             className={cn(
               "w-10 h-10 rounded-lg flex items-center justify-center mb-2 relative group",
               item.active
-                ? "bg-sidebar-accent text-sidebar-primary"
+                ? "bg-primary/10 text-primary"
                 : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
             )}
             whileHover={{ scale: 1.05 }}
@@ -90,7 +97,7 @@ export function Sidebar({
           >
             <item.icon className="w-5 h-5" />
             {item.premium && userTier === 'free' && (
-              <Lock className="w-3 h-3 absolute -top-1 -right-1 text-secondary" />
+              <Lock className="w-3 h-3 absolute -top-1 -right-1 text-premium" />
             )}
             {!expanded && (
               <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
@@ -102,6 +109,28 @@ export function Sidebar({
         ))}
 
         <div className="flex-1" />
+
+        {/* Admin Mode Toggle */}
+        <div className="mb-2 relative group">
+          <motion.button
+            onClick={onAdminToggle}
+            className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center",
+              isAdmin
+                ? "bg-primary/20 text-primary"
+                : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+            )}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Shield className="w-5 h-5" />
+          </motion.button>
+          {!expanded && (
+            <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+              Admin Mode: {isAdmin ? 'ON' : 'OFF'}
+            </div>
+          )}
+        </div>
 
         {/* Advanced Functions - Surprise Effect */}
         <motion.div
@@ -124,7 +153,7 @@ export function Sidebar({
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.8, x: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute bottom-0 left-full ml-2 w-48 glass-card p-2 z-50"
+                className="absolute bottom-0 left-full ml-2 w-52 glass-card p-2 z-50"
               >
                 <button
                   onClick={onSettingsClick}
@@ -140,13 +169,25 @@ export function Sidebar({
                   <CreditCard className="w-4 h-4" />
                   Subscription
                 </button>
+                {isAdmin && (
+                  <>
+                    <div className="h-px bg-border my-1" />
+                    <button
+                      onClick={onAdminClick}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted text-left text-primary"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Admin CMS
+                    </button>
+                  </>  
+                )}
                 <button
                   onClick={() => toast.info('ML Model Config', { description: 'Coming soon in Pro tier' })}
                   className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted text-left relative"
                 >
                   <Boxes className="w-4 h-4" />
                   ML Models
-                  {userTier === 'free' && <Lock className="w-3 h-3 ml-auto text-secondary" />}
+                  {userTier === 'free' && <Lock className="w-3 h-3 ml-auto text-premium" />}
                 </button>
               </motion.div>
             )}
@@ -189,6 +230,16 @@ export function Sidebar({
               </div>
             </div>
 
+            {/* Admin Mode Indicator */}
+            {isAdmin && (
+              <div className="mx-3 mt-2 p-2 rounded-lg bg-primary/10 border border-primary/30">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-medium text-primary">Admin Mode Active</span>
+                </div>
+              </div>
+            )}
+
             {/* File Tree */}
             <ScrollArea className="flex-1 px-2 py-2">
               {/* Project Root */}
@@ -198,9 +249,9 @@ export function Sidebar({
                   className="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-sidebar-accent/50 text-left"
                 >
                   {foldersOpen.src ? (
-                    <FolderOpen className="w-4 h-4 text-accent" />
+                    <FolderOpen className="w-4 h-4 text-secondary" />
                   ) : (
-                    <Folder className="w-4 h-4 text-accent" />
+                    <Folder className="w-4 h-4 text-secondary" />
                   )}
                   <span>src</span>
                 </button>
@@ -256,7 +307,7 @@ export function Sidebar({
       {!expanded && (
         <button
           onClick={onToggle}
-          className="absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-sidebar-accent border border-sidebar-border flex items-center justify-center hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors z-10"
+          className="absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-sidebar-accent border border-sidebar-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors z-10"
         >
           <ChevronRight className="w-3 h-3" />
         </button>

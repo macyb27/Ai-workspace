@@ -11,7 +11,10 @@ import {
   Share2,
   Zap,
   Crown,
-  ChevronDown
+  ChevronDown,
+  Compass,
+  Shield,
+  Settings
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -21,8 +24,19 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
-export function Header({ onAIToggle, showAI, aiCredits, userTier, onUpgradeClick }) {
+export function Header({ 
+  onAIToggle, 
+  onGuideToggle,
+  showAI, 
+  showGuide,
+  aiCredits, 
+  userTier, 
+  onUpgradeClick,
+  isAdmin,
+  onAdminClick
+}) {
   const [isRunning, setIsRunning] = useState(false)
 
   const handleRun = () => {
@@ -63,8 +77,18 @@ export function Header({ onAIToggle, showAI, aiCredits, userTier, onUpgradeClick
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">my-bmad-app</span>
           {userTier !== 'free' && (
-            <span className="px-2 py-0.5 text-xs rounded-full bg-secondary/20 text-secondary border border-secondary/30">
+            <span className={cn(
+              "px-2 py-0.5 text-xs rounded-full border",
+              userTier === 'enterprise' 
+                ? "bg-accent/20 text-accent border-accent/30"
+                : "bg-secondary/20 text-secondary border-secondary/30"
+            )}>
               {userTier.toUpperCase()}
+            </span>
+          )}
+          {isAdmin && (
+            <span className="px-2 py-0.5 text-xs rounded-full bg-primary/20 text-primary border border-primary/30">
+              ADMIN
             </span>
           )}
         </div>
@@ -72,6 +96,17 @@ export function Header({ onAIToggle, showAI, aiCredits, userTier, onUpgradeClick
 
       {/* Center Section - Actions */}
       <div className="flex items-center gap-2">
+        {/* AI Guide Toggle */}
+        <Button
+          variant={showGuide ? 'neon' : 'glass'}
+          size="sm"
+          onClick={onGuideToggle}
+          className="gap-2"
+        >
+          <Compass className="w-4 h-4" />
+          <span className="hidden sm:inline">Guide</span>
+        </Button>
+
         <Button
           variant="glass"
           size="sm"
@@ -84,7 +119,7 @@ export function Header({ onAIToggle, showAI, aiCredits, userTier, onUpgradeClick
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             >
-              <Zap className="w-4 h-4 text-accent" />
+              <Zap className="w-4 h-4 text-secondary" />
             </motion.div>
           ) : (
             <Play className="w-4 h-4" />
@@ -118,11 +153,19 @@ export function Header({ onAIToggle, showAI, aiCredits, userTier, onUpgradeClick
         </DropdownMenu>
       </div>
 
-      {/* Right Section - AI & Credits */}
+      {/* Right Section - AI & Admin */}
       <div className="flex items-center gap-3">
         {/* AI Credits */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
-          <Sparkles className="w-4 h-4 text-primary" />
+        <div className={cn(
+          "flex items-center gap-2 px-3 py-1.5 rounded-lg border",
+          aiCredits <= 10 && userTier === 'free'
+            ? "bg-destructive/10 border-destructive/30"
+            : "bg-muted/50 border-border"
+        )}>
+          <Sparkles className={cn(
+            "w-4 h-4",
+            aiCredits <= 10 && userTier === 'free' ? "text-destructive" : "text-primary"
+          )} />
           <span className="text-sm font-medium">
             {userTier === 'enterprise' ? '∞' : aiCredits}
           </span>
@@ -131,14 +174,27 @@ export function Header({ onAIToggle, showAI, aiCredits, userTier, onUpgradeClick
 
         {/* AI Toggle */}
         <Button
-          variant={showAI ? 'premium' : 'glass'}
+          variant={showAI ? 'neon' : 'glass'}
           size="sm"
           onClick={onAIToggle}
           className="gap-2"
         >
           <Sparkles className="w-4 h-4" />
-          <span className="hidden sm:inline">AI Assistant</span>
+          <span className="hidden sm:inline">AI Chat</span>
         </Button>
+
+        {/* Admin Button */}
+        {isAdmin && (
+          <Button
+            variant="admin"
+            size="sm"
+            onClick={onAdminClick}
+            className="gap-2"
+          >
+            <Shield className="w-4 h-4" />
+            <span className="hidden sm:inline">CMS</span>
+          </Button>
+        )}
 
         {/* Upgrade Button (for free tier) */}
         {userTier === 'free' && (

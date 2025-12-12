@@ -39,7 +39,7 @@ export function LivePreview({ code }) {
 
   const selectedDevice = devicePresets.find(d => d.id === device)
 
-  // Create preview HTML
+  // Create preview HTML with dark theme
   const previewHTML = `
     <!DOCTYPE html>
     <html>
@@ -50,9 +50,9 @@ export function LivePreview({ code }) {
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
           font-family: 'Space Grotesk', system-ui, sans-serif;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+          background: #0a0a0a;
           min-height: 100vh;
-          color: #f8fafc;
+          color: #f5f5f5;
         }
         .preview-container {
           padding: 2rem;
@@ -60,18 +60,18 @@ export function LivePreview({ code }) {
         h1 {
           font-size: 2.5rem;
           font-weight: 700;
-          background: linear-gradient(135deg, #00d4ff, #7c3aed);
+          background: linear-gradient(135deg, #22c55e, #d4ff00);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           margin-bottom: 0.5rem;
         }
         p {
-          color: #94a3b8;
+          color: #71717a;
           margin-bottom: 1.5rem;
         }
         .btn {
-          background: linear-gradient(135deg, #00d4ff, #7c3aed);
-          color: #0f172a;
+          background: linear-gradient(135deg, #22c55e, #d4ff00);
+          color: #0a0a0a;
           padding: 0.75rem 1.5rem;
           border: none;
           border-radius: 0.5rem;
@@ -81,12 +81,11 @@ export function LivePreview({ code }) {
         }
         .btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+          box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
         }
         .card {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 1rem;
           padding: 1.5rem;
           margin-top: 2rem;
@@ -100,30 +99,41 @@ export function LivePreview({ code }) {
         .stat {
           text-align: center;
           padding: 1rem;
-          background: rgba(0, 212, 255, 0.1);
+          background: rgba(34, 197, 94, 0.1);
+          border: 1px solid rgba(34, 197, 94, 0.2);
           border-radius: 0.5rem;
         }
         .stat-value {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #00d4ff;
+          color: #22c55e;
         }
         .stat-label {
           font-size: 0.75rem;
-          color: #94a3b8;
+          color: #71717a;
           margin-top: 0.25rem;
+        }
+        .badge {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          background: rgba(212, 255, 0, 0.1);
+          border: 1px solid rgba(212, 255, 0, 0.3);
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          color: #d4ff00;
+          margin-left: 0.5rem;
         }
       </style>
     </head>
     <body>
       <div class="preview-container">
         <header>
-          <h1>Welcome to BMAD</h1>
-          <p>Build amazing applications with AI</p>
+          <h1>Welcome to BMAD <span class="badge">v2.0</span></h1>
+          <p>Build amazing applications with AI-powered assistance</p>
           <button class="btn">Get Started</button>
         </header>
         <div class="card">
-          <h3 style="margin-bottom: 0.5rem;">Project Stats</h3>
+          <h3 style="margin-bottom: 0.5rem; color: #f5f5f5;">Project Stats</h3>
           <p style="font-size: 0.875rem;">Real-time metrics for your app</p>
           <div class="stats">
             <div class="stat">
@@ -150,9 +160,9 @@ export function LivePreview({ code }) {
       {/* Preview Header */}
       <div className="h-10 flex items-center justify-between px-4 border-b border-border bg-muted/30">
         <div className="flex items-center gap-2">
-          <Eye className="w-4 h-4 text-success" />
+          <Eye className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium">Live Preview</span>
-          <span className="px-2 py-0.5 text-xs rounded-full bg-success/20 text-success">
+          <span className="px-2 py-0.5 text-xs rounded-full bg-primary/20 text-primary border border-primary/30">
             Auto-sync
           </span>
         </div>
@@ -162,7 +172,7 @@ export function LivePreview({ code }) {
           {devicePresets.map((preset) => (
             <Button
               key={preset.id}
-              variant={device === preset.id ? 'default' : 'ghost'}
+              variant={device === preset.id ? 'neon' : 'ghost'}
               size="icon-sm"
               onClick={() => setDevice(preset.id)}
               title={preset.label}
@@ -207,7 +217,7 @@ export function LivePreview({ code }) {
           className="h-full flex justify-center"
         >
           <div
-            className="bg-background rounded-lg overflow-hidden shadow-lg transition-all duration-300"
+            className="bg-black rounded-lg overflow-hidden shadow-lg border border-border transition-all duration-300"
             style={{
               width: selectedDevice?.width || '100%',
               maxWidth: '100%',
