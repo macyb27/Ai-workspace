@@ -1,4 +1,4 @@
-import AIAssistant from '@/components/AIAssistant';
+import AIAssistant from '@/components/workspace/AIAssistant';
 // Falls deine AIAssistant woanders liegt, Pfad anpassen, z.B. '../components/AIAssistant' oder '@/app/components/AIAssistant'
 
 export default function Home() {
