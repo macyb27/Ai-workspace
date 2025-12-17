@@ -1,40 +1,29 @@
-import { MongoClient } from 'mongodb'
-import { v4 as uuidv4 } from 'uuid'
-import { NextResponse } from 'next/server'
+import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { OpenAI } from 'openai';
 
-// MongoDB connection
-let client
-let db
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-async function connectToMongo() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URL)
-    await client.connect()
-    db = client.db(process.env.DB_NAME)
+export const runtime = 'edge'; // Low Latency, billiger
+
+export async function POST(req) {
+  try {
+    const { messages } = await req.json();
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini', // günstig & schnell, später gpt-4o oder grok wechseln
+      stream: true,
+      messages,
+    });
+
+    const stream = OpenAIStream(response);
+    return new StreamingTextResponse(stream);
+  } catch (error) {
+    console.error(error);
+    return new Response('Error', { status: 500 });
   }
-  return db
 }
-
-// Helper function to handle CORS
-function handleCORS(response) {
-  response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*')
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  response.headers.set('Access-Control-Allow-Credentials', 'true')
-  return response
-}
-
-// OPTIONS handler for CORS
-export async function OPTIONS() {
-  return handleCORS(new NextResponse(null, { status: 200 }))
-}
-
-// Route handler function
-async function handleRoute(request, { params }) {
-  const { path = [] } = params
-  const route = `/${path.join('/')}`
-  const method = request.method
-
   try {
     const db = await connectToMongo()
 
