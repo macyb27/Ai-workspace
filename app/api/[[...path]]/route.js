@@ -1,93 +1,79 @@
-import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { OpenAI } from 'openai';
+import { NextResponse } from 'next/server';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export const runtime = 'edge'; // Low Latency, billiger
-
-export async function POST(req) {
-  try {
-    const { messages } = await req.json();
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // günstig & schnell, später gpt-4o oder grok wechseln
-      stream: true,
-      messages,
-    });
-
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
-  } catch (error) {
-    console.error(error);
-    return new Response('Error', { status: 500 });
-  }
+// CORS Helper – bleibt, weil wir keine Lust auf Browser-Drama haben
+function addCORSHeaders(response) {
+  response.headers.set('Access-Control-Allow-Origin', process.env.CORS_ORIGINS || '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  response.headers.set('Access-Control-Allow-Credentials', 'true');
+  return response;
 }
+
+export async function OPTIONS() {
+  return addCORSHeaders(new NextResponse(null, { status: 200 }));
+}
+
+// Haupt-Handler für GET und POST (wir fangen erstmal nur die an, Rest später bei Bedarf)
+async function handler(request, { params }) {
+  const { path = [] } = params;
+  const method = request.method;
+
   try {
-    const db = await connectToMongo()
-
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/root' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
-    }
-    // Root endpoint - GET /api/root (since /api/ is not accessible with catch-all)
-    if (route === '/' && method === 'GET') {
-      return handleCORS(NextResponse.json({ message: "Hello World" }))
+    // Health Check – immer schön haben
+    if (path.length === 0 || path[0] === 'health') {
+      return addCORSHeaders(NextResponse.json({ status: 'operational', timestamp: new Date().toISOString() }));
     }
 
-    // Status endpoints - POST /api/status
-    if (route === '/status' && method === 'POST') {
-      const body = await request.json()
-      
-      if (!body.client_name) {
-        return handleCORS(NextResponse.json(
-          { error: "client_name is required" }, 
-          { status: 400 }
-        ))
+    // Erster echter Agent-Endpoint: /api/chat (POST only)
+    if (path[0] === 'chat' && method === 'POST') {
+      const body = await request.json();
+
+      // Minimalvalidation – wir bauen das später mit Zod aus
+      if (!body.messages || !Array.isArray(body.messages)) {
+        return addCORSHeaders(NextResponse.json({ error: 'messages array required' }, { status: 400 }));
       }
 
-      const statusObj = {
-        id: uuidv4(),
-        client_name: body.client_name,
-        timestamp: new Date()
-      }
+      // Placeholder für Agent-Logik – hier kommt später unser Mastermind-Agent-Swarm rein
+      const responseText = `Agent received ${body.messages.length} messages. Mastermind orchestration incoming. Hold tight, we're building gods here.`;
 
-      await db.collection('status_checks').insertOne(statusObj)
-      return handleCORS(NextResponse.json(statusObj))
+      // Streaming-Ready von Anfang an (auch wenn wir noch plain JSON schicken)
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(JSON.stringify({ response: responseText })));
+          controller.close();
+        }
+      });
+
+      return addCORSHeaders(new NextResponse(stream, {
+        headers: { 'Content-Type': 'application/json' },
+      }));
     }
 
-    // Status endpoints - GET /api/status
-    if (route === '/status' && method === 'GET') {
-      const statusChecks = await db.collection('status_checks')
-        .find({})
-        .limit(1000)
-        .toArray()
-
-      // Remove MongoDB's _id field from response
-      const cleanedStatusChecks = statusChecks.map(({ _id, ...rest }) => rest)
-      
-      return handleCORS(NextResponse.json(cleanedStatusChecks))
+    // Tools Endpoint Placeholder – /api/tools
+    if (path[0] === 'tools' && method === 'GET') {
+      const tools = [
+        { name: "get_weather", description: "Get current weather for a city" },
+        { name: "search_knowledge", description: "Search internal knowledge base" },
+        // mehr kommen, wenn wir sie bauen
+      ];
+      return addCORSHeaders(NextResponse.json({ tools }));
     }
 
-    // Route not found
-    return handleCORS(NextResponse.json(
-      { error: `Route ${route} not found` }, 
+    // 404 für alles andere – klartext
+    return addCORSHeaders(NextResponse.json(
+      { error: `Route /${path.join('/')} not implemented yet. We're cooking.` },
       { status: 404 }
-    ))
+    ));
 
   } catch (error) {
-    console.error('API Error:', error)
-    return handleCORS(NextResponse.json(
-      { error: "Internal server error" }, 
+    console.error('API Error:', error);
+    return addCORSHeaders(NextResponse.json(
+      { error: 'Internal server error – but we're better than this' },
       { status: 500 }
-    ))
+    ));
   }
 }
 
-// Export all HTTP methods
-export const GET = handleRoute
-export const POST = handleRoute
-export const PUT = handleRoute
-export const DELETE = handleRoute
-export const PATCH = handleRoute
+// Export nur was wir brauchen – PUT/DELETE/PATCH kommen, wenn wir sie wirklich wollen
+export const GET = handler;
+export const POST = handler;
